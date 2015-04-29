@@ -24,12 +24,14 @@ public class Board
 		
 		//We want the first player to go first.
 		first_turn = true;
+		
+		//
 	}
 	
 	/**
 	 * Print every row of the board. Automatically adds in spacing and lines.
 	 */
-	public void printBoard()
+	private void printBoard()
 	{		
 		//Display turn information.
 		System.out.print("Displaying Board: ");
@@ -45,7 +47,7 @@ public class Board
 			for(BoardToken token : row)
 			{
 				//Get the item type to print.
-				char c = 'W';
+				char c = '.';
 				switch(token)
 				{
 					case NONE:
@@ -59,7 +61,7 @@ public class Board
 						break;
 				}
 				
-				//Print item, right border, and new line.
+				//Print item and gap.
 				System.out.print(c);
 				System.out.print(' ');
 			}
@@ -67,5 +69,72 @@ public class Board
 			//New line for grid pattern.
 			System.out.print('\n');
 		}
+	}
+
+	/**
+	 * Game loop.
+	 */
+	public void play()
+	{
+		boolean running = true;
+		
+		//Loop while game is not over.
+		while(running)
+		{
+			//Display current state of board.
+			printBoard();
+			
+			//Determine turn.
+			if(first_turn)
+			{//Player's turn.
+				
+			}
+			else
+			{//Bot's turn.
+				
+			}
+			
+			//Flip to next player's turn;
+			first_turn = !first_turn;
+			
+			//Change running variable.
+			running = !(hasWinner(1) || hasWinner(2));
+		}
+		
+		//Display final board and win status.
+		
+	}
+	
+	/**
+	 * Score board for a winner.
+	 * @return True if winner. False otherwise.
+	 */
+	private boolean hasWinner(int player)
+	{
+		BoardToken check;
+		
+		if(player == 1)	//X
+			check = BoardToken.X;
+		else					//O
+			check = BoardToken.O;
+		
+		//Check the 8 different lines.
+		//Vertical
+		for(int i = 0; i < 3; i++)
+			if(board[0][i] == check && board[1][i] == check && board[2][i] == check)
+				return true;
+		
+		//Horizontal
+		for(int i = 0; i < 3; i++)
+			if(board[i][0] == check && board[i][1] == check && board[i][2] == check)
+				return true;
+		
+		//Diagonal
+		if(board[0][0] == check && board[1][1] == check && board[2][2] == check)
+			return true;
+		if(board[2][0] == check && board[1][1] == check && board[0][2] == check)
+			return true;
+		
+		return false;
 	}
 }
