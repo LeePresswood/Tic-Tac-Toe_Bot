@@ -31,8 +31,6 @@ public class Board
 		
 		//We want the first player to go first.
 		first_turn = true;
-		
-		//
 	}
 	
 	/**
@@ -83,6 +81,7 @@ public class Board
 	 */
 	public void play()
 	{
+		int turn_count = 0;
 		String hold;
 		Scanner scanner = new Scanner(System.in);
 		boolean running = true;
@@ -90,13 +89,16 @@ public class Board
 		//Loop while game is not over.
 		while(running)
 		{
+			BoardToken t;
+			int value;
+			
 			//Display current state of board.
 			printBoard();
 			
 			//Determine turn.
 			if(first_turn)
 			{//Player's turn.
-				int value;
+				//Get good position.
 				do
 				{
 					//Get position.
@@ -108,19 +110,31 @@ public class Board
 						value = -1;
 				}while(!isValidPosition(value));
 				
-				//Place in position.
-				place(value, BoardToken.X);
+				t = BoardToken.X;
 			}
 			else
 			{//Bot's turn.
-				place(AI.play(this), BoardToken.O);
+				//Get good position.
+				do
+				{
+					value = AI.play(this);
+				}while(!isValidPosition(value));
+				
+				t = BoardToken.O;
 			}
+			
+			//Place in position.
+			place(value, t);
 			
 			//Flip to next player's turn;
 			first_turn = !first_turn;
 			
 			//Change running variable.
 			running = !(hasWinner(1) || hasWinner(2));
+			
+			//Cancel out if game is out of moves.
+			if(++turn_count == 9)
+				running = false;
 		}
 		
 		//Display final board and win status.
