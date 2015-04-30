@@ -2,15 +2,20 @@ package board;
 
 import java.util.Scanner;
 
+import ai.AI;
+
 public class Board
 {
+	//Used for printing board.
 	private final char BOARD_TOKEN_X = 'X';
 	private final char BOARD_TOKEN_O = 'O';
-	private final char BOARD_TOKEN_NONE = ' ';
+	private final char BOARD_TOKEN_NONE = '_';
 	
+	//Board the AI will read.
 	public BoardToken[][] board;
 	
-	public boolean first_turn;
+	//Turn count.
+	private boolean first_turn;
 	
 	public Board()
 	{
@@ -78,6 +83,7 @@ public class Board
 	 */
 	public void play()
 	{
+		String hold;
 		Scanner scanner = new Scanner(System.in);
 		boolean running = true;
 		
@@ -95,15 +101,19 @@ public class Board
 				{
 					//Get position.
 					System.out.print("Enter space (1-9): ");
-					value = scanner.nextInt();
+					hold = scanner.next();
+					if(Character.isDigit(hold.charAt(0)))
+						value = Integer.parseInt(hold);
+					else
+						value = -1;
 				}while(!isValidPosition(value));
 				
 				//Place in position.
-				board[(value - 1) / 3][(value - 1) % 3] = BoardToken.X;
+				place(value, BoardToken.X);
 			}
 			else
 			{//Bot's turn.
-				
+				place(AI.play(this), BoardToken.O);
 			}
 			
 			//Flip to next player's turn;
@@ -141,6 +151,11 @@ public class Board
 		
 		//Check board. Value must be blank.
 		return board[(value - 1) / 3][(value - 1) % 3] == BoardToken.NONE;
+	}
+	
+	private void place(int value, BoardToken t)
+	{
+		board[(value - 1) / 3][(value - 1) % 3] = t;
 	}
 
 	/**
