@@ -1,5 +1,7 @@
 package board;
 
+import java.util.Scanner;
+
 public class Board
 {
 	private final char BOARD_TOKEN_X = 'X';
@@ -76,6 +78,7 @@ public class Board
 	 */
 	public void play()
 	{
+		Scanner scanner = new Scanner(System.in);
 		boolean running = true;
 		
 		//Loop while game is not over.
@@ -87,7 +90,16 @@ public class Board
 			//Determine turn.
 			if(first_turn)
 			{//Player's turn.
+				int value;
+				do
+				{
+					//Get position.
+					System.out.print("Enter space (1-9): ");
+					value = scanner.nextInt();
+				}while(!isValidPosition(value));
 				
+				//Place in position.
+				board[(value - 1) / 3][(value - 1) % 3] = BoardToken.X;
 			}
 			else
 			{//Bot's turn.
@@ -102,9 +114,35 @@ public class Board
 		}
 		
 		//Display final board and win status.
+		printBoard();
+		if(hasWinner(1))
+			System.out.println("Player 1 Wins!");
+		else
+			System.out.println("Player 2 Wins!");
 		
+		//Freeze game for analysis.
+		System.out.println("Type any letter + Enter to close.");
+		scanner.next();
+		
+		//End.
+		scanner.close();
 	}
 	
+	/**
+	 * Player tried to place a value in this position Is it blank?
+	 * @param value Single-level coordinate.
+	 * @return True if board value is valid. False otherwise.
+	 */
+	private boolean isValidPosition(int value)
+	{
+		//Can't be less than 0 or greater than 9.
+		if(value < 0 || value > 9)
+			return false;
+		
+		//Check board. Value must be blank.
+		return board[(value - 1) / 3][(value - 1) % 3] == BoardToken.NONE;
+	}
+
 	/**
 	 * Score board for a winner.
 	 * @return True if winner. False otherwise.
@@ -135,6 +173,7 @@ public class Board
 		if(board[2][0] == check && board[1][1] == check && board[0][2] == check)
 			return true;
 		
+		//No win.
 		return false;
 	}
 }
